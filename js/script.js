@@ -1,5 +1,5 @@
 const buttons = document.querySelectorAll(".button");
-let buttondown = false;
+let buttondown = false;//flag
 
 window.onload = ()=>{
     buttons.forEach(function(button){
