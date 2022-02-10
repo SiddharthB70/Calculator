@@ -1,5 +1,5 @@
 body{
-    background-color: #DD11A4;
+    background-color: #ac0f7f; /*new - #ac0f7f; old - #DD11A4*/
     width: 100vw;
     height: 100vh;
     display: flex;
@@ -89,7 +89,6 @@ body{
     box-shadow: 0 0 0 0 transparent;
     left: 5px;
     top: 5px;
-    transform: scale(0.9);
 }
 
 
