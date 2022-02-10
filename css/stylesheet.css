@@ -17,6 +17,7 @@ body{
     border-radius: 10px;
     padding: 40px;
     box-sizing: border-box;
+    box-shadow: 10px 10px 20px 10px rgba(0,0,0,0.25);
 }
 
 #display{
@@ -31,7 +32,43 @@ body{
 .buttons{
     width: 300px;
     height: 380px;
+    display: flex;
+    justify-content: space-between;
 }
 
+.buttons-column{
+    flex: 0 0 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between
+}
 
+.button{
+    flex: 0 0 auto;
+    width: 60px;
+    height: 60px;
+    box-shadow: 5px 5px 10px 5px rgba(0,0,0,0.25);
+    display: flex;
+    position: relative;
+}
 
+.number{
+    border-radius: 50%;
+    background-color: #19D7C4;
+}
+
+.operation{
+    background-color: #DD11A4;
+}
+
+#all-clear{
+    background-color: #DF5151;
+}
+
+#backspace{
+    background-color:#6265B1;
+}
+
+.operation,#all-clear,#backspace{
+    border-radius: 10px;
+}
