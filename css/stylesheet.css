@@ -55,6 +55,7 @@ body{
     position: relative;
     align-items: center;
     justify-content: center;
+    transition: all 0.2s;
 }
 
 .number{
@@ -78,3 +79,8 @@ body{
 .operation,#all-clear,#backspace{
     border-radius: 10px;
 }
+
+.button:hover{
+    filter: brightness(0.7);
+}
+
