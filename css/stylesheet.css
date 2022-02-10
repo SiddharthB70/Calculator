@@ -84,3 +84,13 @@ body{
     filter: brightness(0.7);
 }
 
+.click{
+    filter: brightness(0.7);
+    box-shadow: 0 0 0 0 transparent;
+    left: 5px;
+    top: 5px;
+    transform: scale(0.9);
+}
+
+
+
