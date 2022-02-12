@@ -1,9 +1,11 @@
 const buttons = document.querySelectorAll(".button");
 const lowerDisplay = document.getElementById("lower");
 
-let buttondown = false; //flag
+let buttondown = false;//flag
+let displayDefault = true; 
 
 window.onload = ()=>{
+    lowerDisplay.textContent = 0;
     buttons.forEach(function(button){
         button.classList.add("noselect");
         button.addEventListener("mousedown",buttonDown)
@@ -33,5 +35,15 @@ function toggleButton(button){
 }
 
 function pushIntoDisplay(value){
+    if(value === "AC"){
+        displayDefault = true;
+        lowerDisplay.textContent = 0;
+        return;
+    }
+    if(displayDefault){
+        lowerDisplay.textContent = value;
+        displayDefault = false;
+        return;
+    } 
     lowerDisplay.textContent += value;
 }
