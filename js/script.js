@@ -1,5 +1,7 @@
 const buttons = document.querySelectorAll(".button");
-let buttondown = false;//flag
+const lowerDisplay = document.getElementById("lower");
+
+let buttondown = false; //flag
 
 window.onload = ()=>{
     buttons.forEach(function(button){
@@ -14,13 +16,14 @@ window.onload = ()=>{
 }
 
 function buttonDown(e){
-    buttonDown = true;
+    buttondown = true;
     toggleButton(e.target);
+    pushIntoDisplay(e.target.getAttribute("data-value"));
 }
 
 function buttonUp(){
-    if(buttonDown){
-        buttonDown = false;
+    if(buttondown){
+        buttondown = false;
         toggleButton(document.querySelector(".click"));
     }
 }
@@ -29,4 +32,6 @@ function toggleButton(button){
     button.classList.toggle("click");
 }
 
-
+function pushIntoDisplay(value){
+    lowerDisplay.textContent += value;
+}
