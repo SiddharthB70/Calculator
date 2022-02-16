@@ -47,13 +47,13 @@ function toggleButton(button){
 }
 
 function storeValue(value){
-    if(value === "AC"){
+    if(value === "AC" || value === "Escape"){
         allClear();
         return;
     }
     else if(value == ".")
         point();
-    else if(value == "backspace")
+    else if(value.toLowerCase() == "backspace")
         backSpace();
     else if(/[0-9]/.test(value)){
         inputDigit(value);
@@ -70,6 +70,8 @@ function storeValue(value){
     console.log(mainExp);
     lowerDisplay.textContent = "";
     display(mainExp);
+    if(!lowerDisplay.textContent)
+        lowerDisplay.textContent = "0";
 }
 
 function allClear(){
@@ -140,10 +142,16 @@ function inputBrackets(bracket){
 function point(){
     if(exp.pointEntered)
         return;
-    if(!exp.operator)
+    if(!exp.operator){
+        if(!exp.value1)
+            exp.value1 = "0"
         exp.value1 += ".";
-    else 
+    }   
+    else {
+        if(!exp.value2)
+            exp.value2 = "0"
         exp.value2 += ".";
+    }   
     exp.pointEntered = true;
 }
 
@@ -168,7 +176,6 @@ function operate(){
         case "/":   exp.value1 /= exp.value2;
                     break;      
     }
-    // console.log(exp.value1);
     if(!Number.isInteger(exp.value1))
         exp.value1 = exp.value1.toFixed(3);
     exp.value1 = exp.value1.toString();
@@ -194,7 +201,6 @@ function display(expTerm){
 }
 
 function backSpace(){
-    
     let digit;
     if(exp.value2){
         digit = exp.value2.slice(-1);
@@ -209,10 +215,11 @@ function backSpace(){
     if(digit === ".")
         exp.pointEntered = false; 
     if(!exp.value1)
-        exp.value1 = "0";     
+        exp.value1 = "";     
 }
 
-function keyDownEvent(){
-
+function keyDownEvent(e){
+    storeValue(e.key);
+    console.log(e.key);
 }
 
