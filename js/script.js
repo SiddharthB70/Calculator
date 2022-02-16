@@ -86,34 +86,72 @@ function inputOperator(operator){
         else
             operate();
     }
+    if(!exp.value1)
+        exp.value1 = "0";
     exp.operator = operator;
 }
 
+// function inputBrackets(bracket){
+//     if(bracket == "("){
+//         exps.push(exp);
+//         exp.expInputed = true;
+//         let newExp = new Expression();
+//         if(!exp.value1)
+//             exp.value1 = newExp;
+//         else
+//             exp.value2 = newExp;
+//         exp = newExp;   
+//     }
+//     else{
+//         if(!exp.expInputed)
+//             return
+//         operate();
+//         let prevExp = exps.pop();
+//         if(typeof prevExp === "undefined")
+//             return;
+//         if(!prevExp.value1)
+//             prevExp.value1 = exp.value1;
+//         else
+//             prevExp.value2 = exp.value1;   
+        
+//         exp = prevExp;
+
+//     }
+// }
+
 function inputBrackets(bracket){
     if(bracket == "("){
-        exps.push(exp);
-        exp.expInputed = true;
-        let newExp = new Expression();
-        if(!exp.value1)
-            exp.value1 = newExp;
-        else
-            exp.value2 = newExp;
-        exp = newExp;   
+        if((exp.value1 && !exp.operator) || exp.value2)
+            return;
+        else{
+            exps.push(exp);
+            let newExp = new Expression();
+            if(!exp.value1)
+                exp.value1 = newExp;
+            else
+                exp.value2 = newExp;
+            exp = newExp;
+        }    
     }
     else{
-        if(!exp.expInputed)
-            return
-        operate();
-        let prevExp = exps.pop();
-        if(typeof prevExp === "undefined")
+        if(!exp.value2 && exp.operator)
             return;
-        if(!prevExp.value1)
-            prevExp.value1 = exp.value1;
-        else
-            prevExp.value2 = exp.value1;   
-        
-        exp = prevExp;
+        else{
+            let prevExp = exps.pop();
+            if(typeof prevExp === "undefined"){
+                if(!exp.value1)
+                    exp.operator = "";
+                return;
+            }
+            operate();   
+            if(!prevExp.value1)
+                prevExp.value1 = exp.value1;
+            else
+                prevExp.value2 = exp.value1;   
+            
+            exp = prevExp;
 
+        }
     }
 }
 
@@ -139,7 +177,8 @@ function operate(){
 
 function display(expTerm){
     if(typeof expTerm == "object"){
-        lowerDisplay.textContent += "(";
+        if(expTerm != mainExp)
+            lowerDisplay.textContent += "(";
         display(expTerm.value1);
         display(expTerm.operator);
         display(expTerm.value2);
@@ -147,5 +186,3 @@ function display(expTerm){
     else
         lowerDisplay.textContent += expTerm;
 }
-
-
