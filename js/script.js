@@ -193,11 +193,17 @@ function setUpDisplay(){
     if(!errorFound){
         displayExp(mainExp);
         if(!display.textContent)
-        display.textContent = "0";
+            display.textContent = "0";
     }
     else{
         display.textContent = "ERROR";
         errorFound = false;
+        setTimeout(function(){
+            display.textContent = "";
+            displayExp(mainExp);
+            if(!display.textContent)
+                display.textContent = "0";
+        },1500);
     }  
 }
 
@@ -216,9 +222,10 @@ function operate(){
     }
     if(exp.value1 == Infinity){
         errorFound = true;
-        exp.value1 = "0";
+        exp.value1 = "";
+        exp.operator = "";
     }
-    if(!Number.isInteger(exp.value1)){
+    else if(!Number.isInteger(exp.value1)){
         exp.value1 = exp.value1.toFixed(3);
         exp.pointEntered = true;
     }
