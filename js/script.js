@@ -15,7 +15,8 @@ window.onload = ()=>{
         window.addEventListener("mouseup",buttonUp);
         /*If mouse is dragged during mousedown, mouseup 
         and click aren't triggered. To prevent that, 
-        mouseup is instead used on window*/        
+        mouseup is instead used on window*/   
+        document.body.addEventListener("keydown",keyDownEvent);     
     });
     
     exp = mainExp;
@@ -52,6 +53,8 @@ function storeValue(value){
     }
     else if(value == ".")
         point();
+    else if(value == "backspace")
+        backSpace();
     else if(/[0-9]/.test(value)){
         inputDigit(value);
     }
@@ -188,5 +191,28 @@ function display(expTerm){
         lowerDisplay.textContent += expTerm;
     }
         
+}
+
+function backSpace(){
+    
+    let digit;
+    if(exp.value2){
+        digit = exp.value2.slice(-1);
+        exp.value2 = exp.value2.slice(0,-1);
+    }
+    else if(exp.operator)
+        exp.operator = "";
+    else if(exp.value1){
+        digit = exp.value1.slice(-1);
+        exp.value1 = exp.value1.slice(0,-1);
+    }
+    if(digit === ".")
+        exp.pointEntered = false; 
+    if(!exp.value1)
+        exp.value1 = "0";     
+}
+
+function keyDownEvent(){
+
 }
 
