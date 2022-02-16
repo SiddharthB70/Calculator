@@ -1,10 +1,13 @@
 const buttons = document.querySelectorAll(".button");
 const lowerDisplay = document.getElementById("lower");
+const upperDisplay = document.getElementById("upper");
 
 let buttondown = false;//flag for clicking buttons on calculator
 let exp;
 let exps = [];
 let mainExp = new Expression();
+let errorFound = false;
+let uppExp = [];
 
 window.onload = ()=>{
     lowerDisplay.textContent = 0;
@@ -67,11 +70,18 @@ function storeValue(value){
     else if(value == "="){
         inputEqual();
     }
-    console.log(mainExp);
     lowerDisplay.textContent = "";
-    display(mainExp);
-    if(!lowerDisplay.textContent)
+    if(!errorFound){
+        display(mainExp);
+        if(!lowerDisplay.textContent)
         lowerDisplay.textContent = "0";
+    }
+    else{
+        lowerDisplay.textContent = "ERROR";
+        errorFound = false;
+    }
+        
+    
 }
 
 function allClear(){
@@ -79,7 +89,8 @@ function allClear(){
     mainExp = new Expression();
     exp = mainExp;
     lowerDisplay.textContent = "0";
-
+    uppExp = [];
+    upperDisplay.textContent = "0";
 }
 
 function inputDigit(digit){
@@ -87,6 +98,7 @@ function inputDigit(digit){
         exp.value1 += digit;
     else    
         exp.value2 += digit;
+    uppExp.push(digit);
 }
 
 function inputOperator(operator){
@@ -101,6 +113,7 @@ function inputOperator(operator){
     if(exp.pointEntered)
         exp.pointEntered = false;
     exp.operator = operator;
+    uppExp.push(operator);
 }
 
 function inputBrackets(bracket){
@@ -115,26 +128,25 @@ function inputBrackets(bracket){
             else
                 exp.value2 = newExp;
             exp = newExp;
+            uppExp.push("(")
         }    
     }
     else{
         if(!exp.value2 && exp.operator)
             return;
         else{
+            uppExp.push(")")
             let prevExp = exps.pop();
             if(typeof prevExp === "undefined"){
                 if(!exp.value1)
                     exp.operator = "";
                 return;
             }
-            operate();   
-            if(!prevExp.value1)
-                prevExp.value1 = exp.value1;
-            else
-                prevExp.value2 = exp.value1;   
-            
+            if(exp.value1)
+                operate();   
+            let value = Object.keys(prevExp).find((key)=> prevExp[key] == exp);
+            prevExp[value] = exp.value1;            
             exp = prevExp;
-
         }
     }
 }
@@ -151,7 +163,8 @@ function point(){
         if(!exp.value2)
             exp.value2 = "0"
         exp.value2 += ".";
-    }   
+    } 
+    uppExp.push(".")  
     exp.pointEntered = true;
 }
 
@@ -160,6 +173,7 @@ function inputEqual(){
         operate();
         exp.operator = "";
     }
+    uppExp = [exp.value1];
         
 }
 
@@ -176,8 +190,14 @@ function operate(){
         case "/":   exp.value1 /= exp.value2;
                     break;      
     }
-    if(!Number.isInteger(exp.value1))
+    if(exp.value1 == Infinity){
+        errorFound = true;
+        exp.value1 = "";
+    }
+    if(!Number.isInteger(exp.value1)){
         exp.value1 = exp.value1.toFixed(3);
+        exp.pointEntered = true;
+    }
     exp.value1 = exp.value1.toString();
     exp.value2 = "";
 }
@@ -199,8 +219,12 @@ function display(expTerm){
     }
         
 }
+function displayUpper(){
+    upperDisplay.textContent = uppExp.join("");
+}
 
 function backSpace(){
+    uppExp.pop();
     let digit;
     if(exp.value2){
         digit = exp.value2.slice(-1);
@@ -212,6 +236,15 @@ function backSpace(){
         digit = exp.value1.slice(-1);
         exp.value1 = exp.value1.slice(0,-1);
     }
+    else{
+        if(exps.length != 0){
+            let prevExp = exps.pop();
+            let value = Object.keys(prevExp).find((key)=> prevExp[key] == exp);
+            prevExp[value] = exp.value1;            
+            exp = prevExp;
+        }
+            
+    }
     if(digit === ".")
         exp.pointEntered = false; 
     if(!exp.value1)
@@ -220,6 +253,5 @@ function backSpace(){
 
 function keyDownEvent(e){
     storeValue(e.key);
-    console.log(e.key);
 }
 
