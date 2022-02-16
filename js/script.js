@@ -22,7 +22,7 @@ window.onload = ()=>{
 }
 
 function Expression(){
-    this.value1 = "";   //(!value1), (value1) -- used to check if this value has been filled yet
+    this.value1 = "";   //(!value1), (value1) -- used to check if expression has been entered has been filled yet
     this.operator = "";
     this.value2 = "";
     this.pointEntered = false;
@@ -145,7 +145,7 @@ function point(){
 }
 
 function inputEqual(){
-    if(exps.length == 0 && exp.value1){
+    if(exps.length == 0 && exp.value1 && exp.value2){
         operate();
         exp.operator = "";
     }
@@ -180,7 +180,13 @@ function display(expTerm){
         display(expTerm.operator);
         display(expTerm.value2);
     }
-    else
+    else{
+        if(expTerm == "/")
+            expTerm = "\u00F7";
+        else if(expTerm == "*")
+            expTerm = "\u00D7";
         lowerDisplay.textContent += expTerm;
+    }
+        
 }
 
