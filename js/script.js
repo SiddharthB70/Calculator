@@ -216,7 +216,7 @@ function operate(){
     }
     if(exp.value1 == Infinity){
         errorFound = true;
-        exp.value1 = "";
+        exp.value1 = "0";
     }
     if(!Number.isInteger(exp.value1)){
         exp.value1 = exp.value1.toFixed(3);
