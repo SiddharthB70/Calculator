@@ -1,6 +1,5 @@
 const buttons = document.querySelectorAll(".button");
-const lowerDisplay = document.getElementById("lower");
-const upperDisplay = document.getElementById("upper");
+const display = document.getElementById("display");
 
 let buttondown = false;//flag for clicking buttons on calculator
 let exp;
@@ -10,7 +9,7 @@ let errorFound = false;
 let uppExp = [];
 
 window.onload = ()=>{
-    lowerDisplay.textContent = 0;
+    display.textContent = 0;
     buttons.forEach(function(button){
         button.classList.add("noselect");
         button.addEventListener("mousedown",buttonDown)
@@ -70,14 +69,14 @@ function storeValue(value){
     else if(value == "="){
         inputEqual();
     }
-    lowerDisplay.textContent = "";
+    display.textContent = "";
     if(!errorFound){
-        display(mainExp);
-        if(!lowerDisplay.textContent)
-        lowerDisplay.textContent = "0";
+        displayExp(mainExp);
+        if(!display.textContent)
+        display.textContent = "0";
     }
     else{
-        lowerDisplay.textContent = "ERROR";
+        display.textContent = "ERROR";
         errorFound = false;
     }
         
@@ -88,9 +87,7 @@ function allClear(){
     exps = [];
     mainExp = new Expression();
     exp = mainExp;
-    lowerDisplay.textContent = "0";
-    uppExp = [];
-    upperDisplay.textContent = "0";
+    display.textContent = "0";
 }
 
 function inputDigit(digit){
@@ -202,20 +199,20 @@ function operate(){
     exp.value2 = "";
 }
 
-function display(expTerm){
+function displayExp(expTerm){
     if(typeof expTerm == "object"){
         if(expTerm != mainExp)
-            lowerDisplay.textContent += "(";
-        display(expTerm.value1);
-        display(expTerm.operator);
-        display(expTerm.value2);
+            display.textContent += "(";
+        displayExp(expTerm.value1);
+        displayExp(expTerm.operator);
+        displayExp(expTerm.value2);
     }
     else{
         if(expTerm == "/")
             expTerm = "\u00F7";
         else if(expTerm == "*")
             expTerm = "\u00D7";
-        lowerDisplay.textContent += expTerm;
+        display.textContent += expTerm;
     }
         
 }

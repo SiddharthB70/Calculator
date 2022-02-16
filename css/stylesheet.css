@@ -43,22 +43,9 @@ body{
     margin-bottom: 30px;
     padding: 20px;
     box-sizing: border-box;
-}
-
-#lower,#upper{
+    font-size: 25px;
     text-align: right;
     word-break: break-all;
-}
-
-#lower{
-    min-height: 40px;
-    font-size: 30px;
-}
-
-#upper{
-    min-height: 30px;
-    font-size: 20px;
-    margin-bottom: 10px;
 }
 
 .buttons{
