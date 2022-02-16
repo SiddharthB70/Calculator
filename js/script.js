@@ -22,9 +22,10 @@ window.onload = ()=>{
 }
 
 function Expression(){
-    this.value1 = "";
+    this.value1 = "";   //(!value1), (value1) -- used to check if this value has been filled yet
     this.operator = "";
     this.value2 = "";
+    this.pointEntered = false;
 }
 
 function buttonDown(e){
@@ -50,7 +51,7 @@ function storeValue(value){
         return;
     }
     else if(value == ".")
-        return;
+        point();
     else if(/[0-9]/.test(value)){
         inputDigit(value);
     }
@@ -59,6 +60,9 @@ function storeValue(value){
     }
     else if(/[()]/.test(value)){
         inputBrackets(value);
+    }
+    else if(value == "="){
+        inputEqual();
     }
     console.log(mainExp);
     lowerDisplay.textContent = "";
@@ -70,13 +74,14 @@ function allClear(){
     mainExp = new Expression();
     exp = mainExp;
     lowerDisplay.textContent = "0";
+
 }
 
 function inputDigit(digit){
     if(!exp.operator)
-        exp.value1 = exp.value1 + digit;
+        exp.value1 += digit;
     else    
-        exp.value2 = exp.value2 + digit;
+        exp.value2 += digit;
 }
 
 function inputOperator(operator){
@@ -88,36 +93,10 @@ function inputOperator(operator){
     }
     if(!exp.value1)
         exp.value1 = "0";
+    if(exp.pointEntered)
+        exp.pointEntered = false;
     exp.operator = operator;
 }
-
-// function inputBrackets(bracket){
-//     if(bracket == "("){
-//         exps.push(exp);
-//         exp.expInputed = true;
-//         let newExp = new Expression();
-//         if(!exp.value1)
-//             exp.value1 = newExp;
-//         else
-//             exp.value2 = newExp;
-//         exp = newExp;   
-//     }
-//     else{
-//         if(!exp.expInputed)
-//             return
-//         operate();
-//         let prevExp = exps.pop();
-//         if(typeof prevExp === "undefined")
-//             return;
-//         if(!prevExp.value1)
-//             prevExp.value1 = exp.value1;
-//         else
-//             prevExp.value2 = exp.value1;   
-        
-//         exp = prevExp;
-
-//     }
-// }
 
 function inputBrackets(bracket){
     if(bracket == "("){
@@ -155,6 +134,24 @@ function inputBrackets(bracket){
     }
 }
 
+function point(){
+    if(exp.pointEntered)
+        return;
+    if(!exp.operator)
+        exp.value1 += ".";
+    else 
+        exp.value2 += ".";
+    exp.pointEntered = true;
+}
+
+function inputEqual(){
+    if(exps.length == 0 && exp.value1){
+        operate();
+        exp.operator = "";
+    }
+        
+}
+
 function operate(){
     exp.value1 = Number(exp.value1);
     exp.value2 = Number(exp.value2);
@@ -186,3 +183,4 @@ function display(expTerm){
     else
         lowerDisplay.textContent += expTerm;
 }
+
