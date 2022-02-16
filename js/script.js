@@ -1,10 +1,9 @@
 const buttons = document.querySelectorAll(".button");
 const lowerDisplay = document.getElementById("lower");
 
-let buttondown = false;//flag
-let displayDefault = true; 
-let lowerDisplayValues = [];
-let operatorEncountered = false;
+let buttondown = false;//flag for clicking buttons on calculator
+let exp;
+let exps = [];
 let mainExp = new Expression();
 
 window.onload = ()=>{
@@ -16,22 +15,21 @@ window.onload = ()=>{
         window.addEventListener("mouseup",buttonUp);
         /*If mouse is dragged during mousedown, mouseup 
         and click aren't triggered. To prevent that, 
-        mouseup is instead used on window*/
+        mouseup is instead used on window*/        
     });
+    
+    exp = mainExp;
 }
 
 function Expression(){
     this.value1 = "";
     this.operator = "";
     this.value2 = "";
-    this.opInputed = false;
-    this.expInputed = false;
 }
 
 function buttonDown(e){
     buttondown = true;
     toggleButton(e.target);
-    // getValue(e.target.getAttribute("data-value"));
     storeValue(e.target.getAttribute("data-value"));
 }
 
@@ -46,86 +44,108 @@ function toggleButton(button){
     button.classList.toggle("click");
 }
 
-function getValue(value){
-    if(value === "AC"){
-        displayDefault = true;
-        lowerDisplay.textContent = 0;
-        operatorEncountered = false
-        return;
-    }
-    else if(/[0-9]/.test(value)){
-        if(displayDefault)
-            lowerDisplay.textContent = "";
-        lowerDisplay.textContent += value;
-        operatorEncountered = false;
-        
-    }
-    else if(/[*+-/]/.test(value)){
-        if(operatorEncountered)
-            return;
-        lowerDisplay.textContent += value;
-        operatorEncountered = true;
-
-    }
-    displayDefault = false;
-}
-
 function storeValue(value){
     if(value === "AC"){
         allClear();
         return;
     }
+    else if(value == ".")
+        return;
     else if(/[0-9]/.test(value)){
         inputDigit(value);
     }
     else if(/[*+-/]/.test(value)){
         inputOperator(value);
     }
+    else if(/[()]/.test(value)){
+        inputBrackets(value);
+    }
     console.log(mainExp);
-    lowerDisplay.textContent = mainExp.value1 + mainExp.operator + mainExp.value2;
+    lowerDisplay.textContent = "";
+    display(mainExp);
 }
 
 function allClear(){
-    mainExp.value1 = "";
-    mainExp.operator = "";
-    mainExp.value2 = "";
-    mainExp.opInputed = false;
-    mainExp.expInputed = false;
+    exps = [];
+    mainExp = new Expression();
+    exp = mainExp;
     lowerDisplay.textContent = "0";
 }
 
 function inputDigit(digit){
-    if(!mainExp.opInputed)
-        mainExp.value1 = ((mainExp.value1*10) + Number(digit));
+    if(!exp.operator)
+        exp.value1 = exp.value1 + digit;
     else    
-        {mainExp.value2 = ((mainExp.value2*10) + Number(digit));
-            mainExp.expInputed = true;
-        }
-    if(mainExp.opInput)
-        mainExp.opInputed = false;
+        exp.value2 = exp.value2 + digit;
 }
 
 function inputOperator(operator){
-    if(mainExp.opInputed){
-        if(!mainExp.expInputed)
+    if(exp.operator){
+        if(!exp.value2)
             return;
         else
             operate();
     }
-    mainExp.operator = operator;
-    mainExp.opInputed = true;
+    exp.operator = operator;
+}
+
+function inputBrackets(bracket){
+    if(bracket == "("){
+        exps.push(exp);
+        exp.expInputed = true;
+        let newExp = new Expression();
+        if(!exp.value1)
+            exp.value1 = newExp;
+        else
+            exp.value2 = newExp;
+        exp = newExp;   
+    }
+    else{
+        if(!exp.expInputed)
+            return
+        operate();
+        let prevExp = exps.pop();
+        if(typeof prevExp === "undefined")
+            return;
+        if(!prevExp.value1)
+            prevExp.value1 = exp.value1;
+        else
+            prevExp.value2 = exp.value1;   
+        
+        exp = prevExp;
+
+    }
 }
 
 function operate(){
-    switch(mainExp.operator){
-        case "+":   mainExp.value1 += mainExp.value2;
+    exp.value1 = Number(exp.value1);
+    exp.value2 = Number(exp.value2);
+    switch(exp.operator){
+        case "+":   exp.value1 += exp.value2;
                     break;
-        case "-":   mainExp.value1 -= mainExp.value2;
+        case "-":   exp.value1 -= exp.value2;
                     break;
-        case "*":   mainExp.value1 *= mainExp.value2;
+        case "*":   exp.value1 *= exp.value2;
                     break;
-        case "/":   mainExp.value1 /= mainExp.value2;
+        case "/":   exp.value1 /= exp.value2;
                     break;      
     }
-    mainExp.value2 = "";
+    // console.log(exp.value1);
+    if(!Number.isInteger(exp.value1))
+        exp.value1 = exp.value1.toFixed(3);
+    exp.value1 = exp.value1.toString();
+    exp.value2 = "";
 }
+
+function display(expTerm){
+    if(typeof expTerm == "object"){
+        lowerDisplay.textContent += "(";
+        display(expTerm.value1);
+        display(expTerm.operator);
+        display(expTerm.value2);
+    }
+    else
+        lowerDisplay.textContent += expTerm;
+}
+
+
